@@ -9,8 +9,8 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::TextureQuery;
 
-static SCREEN_WIDTH: u32 = 800;
-static SCREEN_HEIGHT: u32 = 600;
+static SCREEN_WIDTH: u32 = 1280;
+static SCREEN_HEIGHT: u32 = 720;
 
 // handle the annoying Rect i32
 macro_rules! rect(
@@ -50,7 +50,6 @@ fn run(font_path: &Path) -> Result<(), String> {
 
     let window = video_subsys
         .window("SDL2_TTF Example", SCREEN_WIDTH, SCREEN_HEIGHT)
-        .position_centered()
         .opengl()
         .build()
         .map_err(|e| e.to_string())?;
@@ -60,18 +59,18 @@ fn run(font_path: &Path) -> Result<(), String> {
 
     // Load a font
     let mut font = ttf_context.load_font(font_path, 128)?;
-    font.set_style(sdl2::ttf::FontStyle::BOLD);
+    font.set_style(sdl2::ttf::FontStyle::NORMAL);
 
     // render a surface, and convert it to a texture bound to the canvas
     let surface = font
         .render("Hello Rust!")
-        .blended(Color::RGBA(255, 0, 0, 255))
+        .blended(Color::RGBA(255, 255, 255, 255))
         .map_err(|e| e.to_string())?;
     let texture = texture_creator
         .create_texture_from_surface(&surface)
         .map_err(|e| e.to_string())?;
 
-    canvas.set_draw_color(Color::RGBA(195, 217, 255, 255));
+    canvas.set_draw_color(Color::RGBA(0, 0, 0, 0));
     canvas.clear();
 
     let TextureQuery { width, height, .. } = texture.query();
@@ -106,7 +105,6 @@ fn run(font_path: &Path) -> Result<(), String> {
 
 fn main() -> Result<(), String> {
     let args: Vec<_> = env::args().collect();
-    println!("Args: {:?}", args[1]);
     println!("linked sdl2_ttf: {}", sdl2::ttf::get_linked_version());
 
     if args.len() < 2 {
