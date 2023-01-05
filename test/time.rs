@@ -7,18 +7,21 @@ fn convert_time(mut seconds: u32) -> (u32, u32, u32) {
     seconds = seconds % 60;
     (hour, minutes, seconds)
 }
+
 fn main() {
     const DELTA_TIME: f64 = 1.0 / 60.0;
-
+    //let mut previous_time = time::Instant::now();
     let mut result = 12345;
     loop {
+        //let dt = time::Instant::now() - previous_time;
+        // previous_time = time::Instant::now();
         let time = convert_time(result);
         println!("{}:{}:{}", time.0, time.1, time.2);
-        println!("The delta time is: {}", DELTA_TIME);
+        // println!("The delta time is: {:?}", dt);
 
         // Add a second
         result += 1;
-        let ten_millis = time::Duration::from_secs((1.0 * 60.0 * DELTA_TIME) as u64);
-        thread::sleep(ten_millis);
+        let ten_seconds = time::Duration::from_secs((1.0 * 60.0 * DELTA_TIME) as u64);
+        thread::sleep(ten_seconds);
     }
 }
