@@ -33,3 +33,10 @@ The timer brigns some options you can use with flags, if you're using `cargo run
 ## Notes
 
 If you're going to make a descending mode remember add the time in the format `hh:mm:ss`, 10 minutes != `10`. 10 minutes == `10:00`
+
+## todo!()
+
+- [ ] Add more options of customize. 
+- [ ] Make an UI
+- [ ] Add some modes (pomodoro, clock, etc...)
+
