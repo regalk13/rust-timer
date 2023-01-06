@@ -2,7 +2,7 @@
 
  
 <div align="center">
-<img height="500" src="https://github.com/regalk13/rust-timer/blob/main/assets/timer-test.gif" />
+<img height="450" src="https://github.com/regalk13/rust-timer/blob/main/assets/timer-test.gif" />
 </div>
 <br>
 
