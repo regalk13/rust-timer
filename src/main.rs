@@ -10,6 +10,9 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
 use sdl2::render::TextureQuery;
+
+use regex::Regex;
+
 static SCREEN_WIDTH: u32 = 800;
 static SCREEN_HEIGHT: u32 = 600;
 
@@ -165,13 +168,51 @@ pub fn run(path: &Path) -> Result<(), String> {
 
     Ok(())
 }
+
+fn parse_to_seconds(time: String) -> u32 {
+    // Format example 5:25:13
+    let re = Regex::new(r"^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$").unwrap(); 
+    let caps = re.captures(&time).unwrap();
+    let mut seconds = 0;
+
+    if let Some(hours) = caps.get(1) {
+        seconds += hours.as_str().parse::<u32>().unwrap() * 3600;
+    }
+    
+    if let Some(minutes) = caps.get(2) {
+        seconds += minutes.as_str().parse::<u32>().unwrap() * 60; 
+    }
+
+    if let Some(seconds_) = caps.get(3) {
+        seconds += seconds_.as_str().parse::<u32>().unwrap(); 
+    }
+    if seconds == 0 {
+        println!("Time parsed to 0! if it's intensional ignore this");
+    }
+    seconds
+}
+
 pub fn main() {
     let args: Vec<_> = env::args().collect();
-
+    let mut path: &Path = Path::new("");
+    let mut countdown: bool = false;
+    let mut time = 0;
     if args.len() < 2 {
-        println!("Usage: ./demo font.[ttf|ttc|fon]")
+        println!("Usage: ./demo -help --h")
     } else {
-        let path: &Path = Path::new(&args[1]);
-        run(path);
+        for (i, arg) in args.iter().enumerate() { 
+            if arg == "-d" {
+                countdown = true;
+                if !(i >= args.len()-1) {
+                    time = parse_to_seconds(args[i+1].clone()); 
+                }
+            } else if arg == "-f" {
+                if !(i >= args.len()-1) {
+                    path = Path::new(&args[i+1]);
+                } 
+            }
+        }
     }
+    println!("Time: {}, coutndown: {}", time, countdown);
+    run(path);
 }
