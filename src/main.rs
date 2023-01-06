@@ -79,7 +79,7 @@ fn get_centered_rect(rect_width: u32, rect_height: u32, cons_width: u32, cons_he
     rect!(cx, cy, w, h)
 }
 
-pub fn run(path: &Path) -> Result<(), String> {
+pub fn run(path: &Path, time: u32, countdown: bool) -> Result<(), String> {
     // init context
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
@@ -111,7 +111,7 @@ pub fn run(path: &Path) -> Result<(), String> {
 
     let mut timer = timer::Timer::new();
 
-    timer.seconds = 12345;
+    timer.seconds = time;
     'running: loop {
         for event in event_pump.poll_iter() {
             match event {
@@ -132,8 +132,15 @@ pub fn run(path: &Path) -> Result<(), String> {
         }
         if !(timer.state == timer::State::Paused) {
             let actual_time = timer.get_time();
-            timer.seconds += 1;
 
+            if countdown {
+                if !(timer.seconds <= 0) {
+                    timer.seconds -= 1;
+                }
+            } else {
+                timer.seconds += 1;
+            }
+            
             canvas.set_draw_color(Color::RGB(0, 0, 0));
             canvas.clear();
 
@@ -194,7 +201,7 @@ fn parse_to_seconds(time: String) -> u32 {
 
 pub fn main() {
     let args: Vec<_> = env::args().collect();
-    let mut path: &Path = Path::new("");
+    let mut path: &Path = Path::new("./assets/fonts/Roboto-Regular.ttf");
     let mut countdown: bool = false;
     let mut time = 0;
     if args.len() < 2 {
@@ -213,6 +220,6 @@ pub fn main() {
             }
         }
     }
-    println!("Time: {}, coutndown: {}", time, countdown);
-    run(path);
+
+    run(path, time, countdown);
 }
