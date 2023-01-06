@@ -18,6 +18,9 @@ The latest stable release of Rust.
 
 SDL2 >= 2.0.14 is recommended to use these bindings; below 2.0.14, you may experience link-time errors as some functions are used here but are not defined in SDL2. If you experience this issue because you are on a LTS machine (for instance, Ubuntu 12.04 or Ubuntu 14.04), we definitely recommend you to use the feature "bundled" which will compile the lastest stable version of SDL2 for your project.
 
+- Arch Linux
+`# pacman -S sdl2 sdl2_ttf` 
+
 ## Usage
 
 The timer brigns some options you can use with flags, if you're using `cargo run` remember ad `--` before the flag.
