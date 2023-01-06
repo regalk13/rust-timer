@@ -1,9 +1,11 @@
-# The Rust Timer
+<h1 align="center">The Rust Timer</h1>
 
+ 
 <div align="center">
 <img height="500" src="https://github.com/regalk13/rust-timer/blob/main/assets/timer-test.gif" />
 </div>
 <br>
+
 Why not rustify the time world using SDL2? 
 
 ## Build
@@ -18,8 +20,12 @@ The latest stable release of Rust.
 
 SDL2 >= 2.0.14 is recommended to use these bindings; below 2.0.14, you may experience link-time errors as some functions are used here but are not defined in SDL2. If you experience this issue because you are on a LTS machine (for instance, Ubuntu 12.04 or Ubuntu 14.04), we definitely recommend you to use the feature "bundled" which will compile the lastest stable version of SDL2 for your project.
 
+For use SDL2 in Rust I'm using this [bindings](https://github.com/Rust-SDL2/rust-sdl2).
+
 - Arch Linux
 `# pacman -S sdl2 sdl2_ttf` 
+
+
 
 ## Usage
 
