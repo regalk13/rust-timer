@@ -140,7 +140,7 @@ pub fn run(path: &Path, time: u32, countdown: bool) -> Result<(), String> {
             } else {
                 timer.seconds += 1;
             }
-            
+
             canvas.set_draw_color(Color::RGB(0, 0, 0));
             canvas.clear();
 
@@ -178,20 +178,20 @@ pub fn run(path: &Path, time: u32, countdown: bool) -> Result<(), String> {
 
 fn parse_to_seconds(time: String) -> u32 {
     // Format example 5:25:13
-    let re = Regex::new(r"^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$").unwrap(); 
+    let re = Regex::new(r"^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$").unwrap();
     let caps = re.captures(&time).unwrap();
     let mut seconds = 0;
 
     if let Some(hours) = caps.get(1) {
         seconds += hours.as_str().parse::<u32>().unwrap() * 3600;
     }
-    
+
     if let Some(minutes) = caps.get(2) {
-        seconds += minutes.as_str().parse::<u32>().unwrap() * 60; 
+        seconds += minutes.as_str().parse::<u32>().unwrap() * 60;
     }
 
     if let Some(seconds_) = caps.get(3) {
-        seconds += seconds_.as_str().parse::<u32>().unwrap(); 
+        seconds += seconds_.as_str().parse::<u32>().unwrap();
     }
     if seconds == 0 {
         println!("Time parsed to 0! if it's intensional ignore this");
@@ -201,22 +201,22 @@ fn parse_to_seconds(time: String) -> u32 {
 
 pub fn main() {
     let args: Vec<_> = env::args().collect();
-    let mut path: &Path = Path::new("./assets/fonts/Roboto-Regular.ttf");
+    let mut path: &Path = Path::new("./assets/fonts/Roboto-Medium.ttf");
     let mut countdown: bool = false;
     let mut time = 0;
     if args.len() < 2 {
         println!("Usage: ./demo -help --h")
     } else {
-        for (i, arg) in args.iter().enumerate() { 
+        for (i, arg) in args.iter().enumerate() {
             if arg == "-d" {
                 countdown = true;
-                if !(i >= args.len()-1) {
-                    time = parse_to_seconds(args[i+1].clone()); 
+                if !(i >= args.len() - 1) {
+                    time = parse_to_seconds(args[i + 1].clone());
                 }
             } else if arg == "-f" {
-                if !(i >= args.len()-1) {
-                    path = Path::new(&args[i+1]);
-                } 
+                if !(i >= args.len() - 1) {
+                    path = Path::new(&args[i + 1]);
+                }
             }
         }
     }
