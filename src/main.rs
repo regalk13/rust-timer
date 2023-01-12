@@ -79,7 +79,7 @@ fn get_centered_rect(rect_width: u32, rect_height: u32, cons_width: u32, cons_he
     rect!(cx, cy, w, h)
 }
 
-pub fn run(path: &Path, time: u32, countdown: bool) -> Result<(), String> {
+pub fn run(path: &Path, time: u32, countdown: bool, exit: bool) -> Result<(), String> {
     // init context
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
@@ -112,6 +112,7 @@ pub fn run(path: &Path, time: u32, countdown: bool) -> Result<(), String> {
     let mut timer = timer::Timer::new();
 
     timer.seconds = time;
+
     'running: loop {
         for event in event_pump.poll_iter() {
             match event {
@@ -131,16 +132,16 @@ pub fn run(path: &Path, time: u32, countdown: bool) -> Result<(), String> {
             }
         }
         if !(timer.state == timer::State::Paused) {
-            let actual_time = timer.get_time();
-
+            let actual_time = timer.get_time(); 
             if countdown {
                 if !(timer.seconds <= 0) {
                     timer.seconds -= 1;
+                } else if timer.seconds == 0 && exit{
+                    break 'running 
                 }
             } else {
                 timer.seconds += 1;
             }
-
             canvas.set_draw_color(Color::RGB(0, 0, 0));
             canvas.clear();
 
@@ -169,8 +170,9 @@ pub fn run(path: &Path, time: u32, countdown: bool) -> Result<(), String> {
             );
             canvas.copy(&texture, None, Some(target))?;
             canvas.present();
-            thread::sleep(seconds);
-        }
+
+            thread::sleep(seconds); 
+       }
     }
 
     Ok(())
@@ -203,6 +205,7 @@ pub fn main() {
     let args: Vec<_> = env::args().collect();
     let mut path: &Path = Path::new("./assets/fonts/Roboto-Medium.ttf");
     let mut countdown: bool = false;
+    let mut exit_after_end: bool = false;
     let mut time = 0;
     if args.len() < 2 {
         println!("Usage: ./demo -help --h")
@@ -210,6 +213,12 @@ pub fn main() {
         for (i, arg) in args.iter().enumerate() {
             if arg == "-d" {
                 countdown = true;
+                if !(i >= args.len() - 1) {
+                    time = parse_to_seconds(args[i + 1].clone());
+                }
+            } else if arg == "-de" {
+                countdown = true;
+                exit_after_end = true;
                 if !(i >= args.len() - 1) {
                     time = parse_to_seconds(args[i + 1].clone());
                 }
@@ -221,5 +230,5 @@ pub fn main() {
         }
     }
 
-    run(path, time, countdown);
+    run(path, time, countdown, exit_after_end);
 }
