@@ -32,7 +32,7 @@ For use SDL2 in Rust I'm using this [bindings](https://github.com/Rust-SDL2/rust
 The timer brigns some options you can use with flags, if you're using `cargo run` remember ad `--` before the flag.
 
 - Normal mode (Ascending) `./demo || cargo run
-- Descending mode `./demo -d 25:13 || cargo run -- -d 25:13`
+- Descending mode `./demo -d 25:13 || cargo run -- -d 25:13` (exit when ends `./demo -de 25:13 || cargo run -- -de 25:13`)
 - Change the font (the default one is Roboto but you can change to your favorite font, search one [here](https://fonts.google.com/)) `./demo -f font.ttf|.fnt|...` || `cargo run -- -f font.ttf|.fnt|...`
 - Press space to pause the timer, or esc to exit.
 
