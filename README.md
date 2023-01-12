@@ -26,7 +26,6 @@ For use SDL2 in Rust I'm using this [bindings](https://github.com/Rust-SDL2/rust
 `# pacman -S sdl2 sdl2_ttf` 
 
 
-
 ## Usage
 
 The timer brigns some options you can use with flags, if you're using `cargo run` remember ad `--` before the flag.
@@ -36,6 +35,15 @@ The timer brigns some options you can use with flags, if you're using `cargo run
 - Change the font (the default one is Roboto but you can change to your favorite font, search one [here](https://fonts.google.com/)) `./demo -f font.ttf|.fnt|...` || `cargo run -- -f font.ttf|.fnt|...`
 - Press space to pause the timer, or esc to exit.
 
+## Pomodoro
+
+This timer can be used as your pomodoro timer in your linux machine!, example of a configuration in your shell:
+```zsh
+
+alias work="./timer -de 50:00 && notify-send 'PomodoroTimer' 'Your <b>work</b> time is up, take a break'"
+alias break="./timer -de 10:00 && notify-send 'PomodoroTimer' 'Your <b>break</b> time is up, get back to work'"
+```
+
 ## Notes
 
 If you're going to make a descending mode remember add the time in the format `hh:mm:ss`, 10 minutes != `10`. 10 minutes == `10:00`
@@ -44,5 +52,4 @@ If you're going to make a descending mode remember add the time in the format `h
 
 - [ ] Add more options of customize. 
 - [ ] Make an UI.
-- [ ] Add some modes (pomodoro, clock, etc...).
-
+- [x] Add some modes (pomodoro, clock, etc...).
