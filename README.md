@@ -50,6 +50,8 @@ If you're going to make a descending mode remember add the time in the format `h
 
 ## todo!()
 
-- [ ] Add more options of customize. 
+- [x] Customization. 
 - [ ] Make an UI.
+- [ ] Help menu.
+- [ ] Modulation of code.
 - [x] Add some modes (pomodoro, clock, etc...).
