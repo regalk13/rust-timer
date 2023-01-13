@@ -1,8 +1,7 @@
 extern crate sdl2;
 
-use std::env;
 use std::path::Path;
-use std::{thread, time};
+use std::{env, num::ParseIntError, thread, time};
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -22,6 +21,7 @@ macro_rules! rect(
     )
 );
 mod timer {
+    use crate::ParseIntError;
     #[derive(Copy, Clone, Default, PartialEq, Eq)]
     pub enum State {
         Paused,
@@ -33,6 +33,72 @@ mod timer {
     pub struct Timer {
         pub state: State,
         pub seconds: u32,
+    }
+
+    pub struct ColorConverter {
+        pub red: u8,
+        pub green: u8,
+        pub blue: u8,
+    }
+
+    impl ColorConverter {
+        pub fn new(hex_code: &str) -> Result<Self, String> {
+            if hex_code.is_empty() {
+                return Err("ERROR: Empty hex color".to_string());
+            }
+
+            let hex_code = if hex_code.starts_with('#') {
+                crop_letters(hex_code, 1)
+            } else {
+                hex_code
+            };
+
+            let hex_code = if hex_code.len() == 3 {
+                repeat_letters(hex_code, 1)
+            } else {
+                hex_code.to_owned()
+            };
+            if hex_code.len() % 2 != 0 {
+                return Err("ERROR: Invalid hex color".to_string());
+            }
+
+            let decoded_values = decode_hex(&hex_code).unwrap_or_default();
+            if decoded_values.is_empty() || decoded_values.len() > 4 {
+                return Err("ERROR: Invalid hex color".to_string());
+            }
+
+            let color = Self {
+                red: decoded_values[0],
+                green: decoded_values[1],
+                blue: decoded_values[2],
+            };
+
+            Ok(color)
+        }
+    }
+
+    fn crop_letters(s: &str, pos: usize) -> &str {
+        match s.char_indices().nth(pos) {
+            Some((pos, _)) => &s[pos..],
+            None => "",
+        }
+    }
+
+    fn repeat_letters(s: &str, repetitions: i32) -> String {
+        let mut output = String::from("");
+        for char in s.chars() {
+            for _ in 0..=repetitions {
+                output.push(char);
+            }
+        }
+
+        output
+    }
+    fn decode_hex(s: &str) -> Result<Vec<u8>, ParseIntError> {
+        (0..s.len())
+            .step_by(2)
+            .map(|i| u8::from_str_radix(&s[i..i + 2], 16))
+            .collect()
     }
 
     impl Timer {
@@ -102,8 +168,43 @@ pub fn run(path: &Path, time: u32, countdown: bool, exit: bool) -> Result<(), St
     let texture_creator = canvas.texture_creator();
 
     println!("Rendering the timer with \"{}\"", canvas.info().name);
+    let mut bcolor = (0, 0, 0);
+    let mut fcolor = (255, 255, 255);
+    
+    // Getting colors
+    match env::var("TIMER_BACKGROUND") {
+        Ok(val) => {
+            let rgb = timer::ColorConverter::new(&val);
+            match rgb {
+                Ok(c) => bcolor = (c.red, c.green, c.blue),
+                Err(e) => {
+                    println!("Error trying to get background color");
+                    println!("{}", e);
+                }
+            }
+        }
+        Err(_) => {
+            canvas.set_draw_color(Color::RGB(bcolor.0, bcolor.1, bcolor.2));
+        }
+    }
+    
+    match env::var("TIMER_FOREGROUND") {
+        Ok(val) => {
+            let rgb = timer::ColorConverter::new(&val);
+            match rgb {
+                Ok(c) => fcolor = (c.red, c.green, c.blue),
+                Err(e) => {
+                    println!("Error trying to get background color");
+                    println!("{}", e);
+                }
+            }
+        }
+        Err(_) => {
+            canvas.set_draw_color(Color::RGB(fcolor.0, fcolor.1, fcolor.2));
+        }
+    }
 
-    canvas.set_draw_color(Color::RGB(0, 0, 0));
+
     canvas.clear();
     canvas.present();
 
@@ -142,8 +243,8 @@ pub fn run(path: &Path, time: u32, countdown: bool, exit: bool) -> Result<(), St
             } else {
                 timer.seconds += 1;
             }
-            
-            canvas.set_draw_color(Color::RGB(0, 0, 0));
+
+            canvas.set_draw_color(Color::RGB(bcolor.0, bcolor.1, bcolor.2));
             canvas.clear();
 
             let seconds = time::Duration::from_secs((1.0 * 60.0 * DELTA_TIME) as u64);
@@ -155,7 +256,7 @@ pub fn run(path: &Path, time: u32, countdown: bool, exit: bool) -> Result<(), St
                     "{}:{}:{}",
                     actual_time.0, actual_time.1, actual_time.2
                 ))
-                .blended(Color::RGBA(255, 255, 255, 255))
+                .blended(Color::RGB(fcolor.0, fcolor.1, fcolor.2))
                 .map_err(|e| e.to_string())?;
             let texture = texture_creator
                 .create_texture_from_surface(&surface)
@@ -203,7 +304,7 @@ fn parse_to_seconds(time: String) -> u32 {
 }
 
 pub fn main() {
-    let args: Vec<_> = env::args().collect(); 
+    let args: Vec<_> = env::args().collect();
     let mut countdown: bool = false;
     let mut exit_after_end: bool = false;
     let mut time = 0;
@@ -212,7 +313,7 @@ pub fn main() {
     let mut value = String::new();
     match font {
         Ok(val) => {
-            value = val;    
+            value = val;
         }
         Err(_) => {
             println!("You need to set a font");
@@ -220,11 +321,11 @@ pub fn main() {
             return;
         }
     }
-    
+
     let mut path = Path::new(&value);
-    
+
     if args.len() < 2 {
-        println!("Usage: ./demo -help --h")
+        println!("Usage: ./timer -help --h")
     } else {
         for (i, arg) in args.iter().enumerate() {
             if arg == "-d" {
