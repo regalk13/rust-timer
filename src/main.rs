@@ -132,16 +132,17 @@ pub fn run(path: &Path, time: u32, countdown: bool, exit: bool) -> Result<(), St
             }
         }
         if !(timer.state == timer::State::Paused) {
-            let actual_time = timer.get_time(); 
+            let actual_time = timer.get_time();
             if countdown {
                 if !(timer.seconds <= 0) {
                     timer.seconds -= 1;
-                } else if timer.seconds == 0 && exit{
-                    break 'running 
+                } else if timer.seconds == 0 && exit {
+                    break 'running;
                 }
             } else {
                 timer.seconds += 1;
             }
+            
             canvas.set_draw_color(Color::RGB(0, 0, 0));
             canvas.clear();
 
@@ -171,8 +172,8 @@ pub fn run(path: &Path, time: u32, countdown: bool, exit: bool) -> Result<(), St
             canvas.copy(&texture, None, Some(target))?;
             canvas.present();
 
-            thread::sleep(seconds); 
-       }
+            thread::sleep(seconds);
+        }
     }
 
     Ok(())
@@ -202,11 +203,26 @@ fn parse_to_seconds(time: String) -> u32 {
 }
 
 pub fn main() {
-    let args: Vec<_> = env::args().collect();
-    let mut path: &Path = Path::new("./assets/fonts/Roboto-Medium.ttf");
+    let args: Vec<_> = env::args().collect(); 
     let mut countdown: bool = false;
     let mut exit_after_end: bool = false;
     let mut time = 0;
+
+    let font = env::var("TIMER_FONT_FAMILY");
+    let mut value = String::new();
+    match font {
+        Ok(val) => {
+            value = val;    
+        }
+        Err(_) => {
+            println!("You need to set a font");
+            println!("export TIMER_FONT_FAMILY=~/fontpath");
+            return;
+        }
+    }
+    
+    let mut path = Path::new(&value);
+    
     if args.len() < 2 {
         println!("Usage: ./demo -help --h")
     } else {
