@@ -170,7 +170,7 @@ pub fn run(path: &Path, time: u32, countdown: bool, exit: bool) -> Result<(), St
     println!("Rendering the timer with \"{}\"", canvas.info().name);
     let mut bcolor = (0, 0, 0);
     let mut fcolor = (255, 255, 255);
-    
+
     // Getting colors
     match env::var("TIMER_BACKGROUND") {
         Ok(val) => {
@@ -187,7 +187,7 @@ pub fn run(path: &Path, time: u32, countdown: bool, exit: bool) -> Result<(), St
             canvas.set_draw_color(Color::RGB(bcolor.0, bcolor.1, bcolor.2));
         }
     }
-    
+
     match env::var("TIMER_FOREGROUND") {
         Ok(val) => {
             let rgb = timer::ColorConverter::new(&val);
@@ -203,7 +203,6 @@ pub fn run(path: &Path, time: u32, countdown: bool, exit: bool) -> Result<(), St
             canvas.set_draw_color(Color::RGB(fcolor.0, fcolor.1, fcolor.2));
         }
     }
-
 
     canvas.clear();
     canvas.present();
@@ -328,6 +327,11 @@ pub fn main() {
         println!("Usage: ./timer -help --h")
     } else {
         for (i, arg) in args.iter().enumerate() {
+            if arg == "-h" || arg == "--help" {
+                println!("-- Welcome to the help match --");
+                println!("match flags {{ \n    -d [time] => countdown specified time.\n    -de [time] => countdown specified time then exit. \n    -f [font] => use a different font at the specified in env var. \n }}");
+                return;
+            }
             if arg == "-d" {
                 countdown = true;
                 if !(i >= args.len() - 1) {
