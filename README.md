@@ -44,6 +44,18 @@ alias work="./timer -de 50:00 && notify-send 'PomodoroTimer' 'Your <b>work</b> t
 alias break="./timer -de 10:00 && notify-send 'PomodoroTimer' 'Your <b>break</b> time is up, get back to work'"
 ```
 
+## Customize
+
+The timer have options that can be changed with enviroment variables:
+```
+TIMER_FONT_FAMILY = font_file
+TIMER_BACKGROUND = hex_color
+TIMER_FOREGROUND = hex_color
+```
+You can change it in your shell configuration or by exporting the variable (ephemeral):
+```zsh
+export TIMER_BACKGROUND="#0F0F0F"
+```
 ## Notes
 
 If you're going to make a descending mode remember add the time in the format `hh:mm:ss`, 10 minutes != `10`. 10 minutes == `10:00`
