@@ -11,6 +11,7 @@ use sdl2::rect::Rect;
 use sdl2::render::TextureQuery;
 
 use regex::Regex;
+use chrono::prelude::*;
 
 static SCREEN_WIDTH: u32 = 800;
 static SCREEN_HEIGHT: u32 = 600;
@@ -347,6 +348,10 @@ pub fn main() {
                 if !(i >= args.len() - 1) {
                     path = Path::new(&args[i + 1]);
                 }
+            } else if arg == "-c" {
+                // time = parse_to_seconds(time::SystemTime::now);
+                let local = Local::now();
+                time = parse_to_seconds(format!("{}:{}:{}", local.hour(), local.minute(), local.second())); 
             }
         }
     }
