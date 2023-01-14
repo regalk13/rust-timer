@@ -33,6 +33,7 @@ The timer brigns some options you can use with flags, if you're using `cargo run
 - Normal mode (Ascending) `./demo || cargo run
 - Descending mode `./demo -d 25:13 || cargo run -- -d 25:13` (exit when ends `./demo -de 25:13 || cargo run -- -de 25:13`)
 - Change the font (the default one is Roboto but you can change to your favorite font, search one [here](https://fonts.google.com/)) `./demo -f font.ttf|.fnt|...` || `cargo run -- -f font.ttf|.fnt|...`
+- Clock mode `./demo -c || cargo run -- -c` get the current time on your machine.
 - Press space to pause the timer, or esc to exit.
 
 ## Pomodoro
